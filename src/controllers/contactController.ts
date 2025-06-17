@@ -1,24 +1,39 @@
-import { Contact } from "../types";
+import Contact from "../models/contact";
+import { Request, Response } from "express";
 
 class ContactController {
-  private contacts: Contact[] = [];
-  private currentId: number = 1;
+  createContact = (req: Request, res: Response) => {
+    const { firstName, lastName, emailAddress, phoneNumber, userMessage } =
+      req.body;
 
-  createContact = (req: any, res: any): void => {
-    const { name, email, phone, message } = req.body;
-    const newContact = { id: this.currentId++, name, email, phone, message };
-    this.contacts = [...this.contacts, newContact];
-    res.status(201).json(newContact);
+    Contact.create({
+      firstName,
+      lastName,
+      emailAddress,
+      phoneNumber,
+      userMessage,
+    })
+      .then((newContact) => {
+        res.status(201).json(newContact);
+      })
+      .catch((err) => {
+        res.status(500).json({ message: "Error creating contact", error: err });
+      });
   };
 
-  getContact = (req: any, res: any): void => {
+  getContact = (req: Request, res: Response) => {
     const { id } = req.params;
-    const contact = this.contacts.find((c) => c.id === parseInt(id));
-    if (contact) {
-      res.status(200).json(contact);
-    } else {
-      res.status(404).json({ message: "Contact not found" });
-    }
+    Contact.findById(id)
+      .then((contact) => {
+        if (contact) {
+          res.status(200).json(contact);
+        } else {
+          res.status(404).json({ message: "Contact not found" });
+        }
+      })
+      .catch((err) => {
+        res.status(500).json({ message: "Error fetching contact", error: err });
+      });
   };
 }
 
