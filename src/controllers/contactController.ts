@@ -1,6 +1,18 @@
 import Contact from "../models/contact";
 import { Request, Response } from "express";
 
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+dotenv.config();
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASSWORD,
+  },
+});
+
 class ContactController {
   createContact = (req: Request, res: Response) => {
     const { firstName, lastName, emailAddress, phoneNumber, userMessage } =
@@ -14,6 +26,15 @@ class ContactController {
       userMessage,
     })
       .then((newContact) => {
+        transporter
+          .sendMail({
+            from: process.env.GMAIL_USER,
+            to: process.env.GMAIL_USER,
+            subject: "Ny kontaktförfrågan",
+            text: `Du har fått ett nytt meddelande från ${firstName} (${emailAddress}): ${userMessage}`,
+          })
+          .then(() => console.log("E-post skickat!"))
+          .catch((err) => console.error("Fel vid e-post:", err));
         res.status(201).json(newContact);
       })
       .catch((err) => {
