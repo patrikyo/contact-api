@@ -13,9 +13,21 @@ mongoose
 
 const app = express();
 const PORT = process.env.PORT || 3100;
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://tayo.onrender.com",
+  "https://portfolio-ii6m.onrender.com",
+];
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
   })
 );
 app.use(express.json());
