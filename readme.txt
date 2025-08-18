@@ -32,8 +32,6 @@ node dist/app.js
 
 - `POST /api/contacts` — Create a new contact
 - `GET /api/contacts/:id` — Get a contact by ID
-- `PUT /api/contacts/:id` — Update a contact
-- `DELETE /api/contacts/:id` — Delete a contact
 
 ## Example Request
 
