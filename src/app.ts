@@ -17,6 +17,7 @@ const PORT = process.env.PORT || 3100;
 const allowedOrigins = [
   "http://localhost:3000",
   "https://tayo.onrender.com",
+  "https://contact-api-u41q.onrender.com",
   "https://portfolio-ii6m.onrender.com",
 ];
 app.use(
